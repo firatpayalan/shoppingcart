@@ -1,4 +1,7 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.cost;
+
+import com.firat.shoppingcart.cart.ShoppingCart;
+import com.firat.shoppingcart.cart.ShoppingCartItem;
 
 import java.util.Map;
 import java.util.stream.Collectors;

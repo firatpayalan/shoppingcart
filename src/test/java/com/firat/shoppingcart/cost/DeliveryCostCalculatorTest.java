@@ -1,5 +1,10 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.cost;
 
+import com.firat.shoppingcart.cart.Category;
+import com.firat.shoppingcart.cart.Product;
+import com.firat.shoppingcart.cart.ShoppingCart;
+import com.firat.shoppingcart.cart.ShoppingCartAdder;
+import com.firat.shoppingcart.cost.DeliveryCostCalculator;
 import org.junit.Assert;
 import org.junit.Test;
 

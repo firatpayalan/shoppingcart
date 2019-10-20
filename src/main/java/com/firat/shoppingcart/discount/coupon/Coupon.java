@@ -1,8 +1,11 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.discount.coupon;
+
+import com.firat.shoppingcart.discount.Discount;
+
 /**
  * Coupon is the special Discount class.
  */
-public class Coupon extends Discount  {
+public class Coupon extends Discount {
     private CouponCalculator applier;
 
     public Coupon(int minimumAmount, double discountValue, CouponCalculator applier) {

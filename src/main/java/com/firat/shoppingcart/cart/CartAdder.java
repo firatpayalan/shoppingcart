@@ -1,4 +1,7 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.cart;
+
+import com.firat.shoppingcart.Result;
+import com.firat.shoppingcart.cart.ShoppingCart;
 
 /**
  * defines a product adding strategy into the shopping cart

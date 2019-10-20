@@ -1,5 +1,11 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.cart;
 
+import com.firat.shoppingcart.discount.campaign.AmountCampaignCalculator;
+import com.firat.shoppingcart.discount.campaign.Campaign;
+import com.firat.shoppingcart.discount.campaign.RateCampaignCalculator;
+import com.firat.shoppingcart.discount.coupon.AmountCouponCalculator;
+import com.firat.shoppingcart.discount.coupon.Coupon;
+import com.firat.shoppingcart.discount.coupon.RateCouponCalculator;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,6 +18,29 @@ public class ShoppingCartTest {
         shoppingCart.addItem(iphoneXs,1);
         Assert.assertEquals(1,shoppingCart.getCart().size());
     }
+    @Test
+    public void addItem_null_category_failed(){
+        Product iphoneXs = new Product("Iphone XS",null,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
+        Assert.assertEquals(0,shoppingCart.getCart().size());
+    }
+    @Test
+    public void addItem_null_product(){
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(null,1);
+        Assert.assertEquals(0,shoppingCart.getCart().size());
+    }
+
+    @Test
+    public void addItem_null_productTitle_failed(){
+        Category category = new Category("İletişim");
+        Product iphoneXs = new Product(null,category,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
+        Assert.assertEquals(0,shoppingCart.getCart().size());
+    }
+
     //has to be append
     @Test
     public void  addItem_duplicate(){
@@ -24,15 +53,7 @@ public class ShoppingCartTest {
         Assert.assertEquals(2,shoppingCart.getCart().get(category.getTitle()).size());
     }
 
-    @Test
-    public void addItem_maximumValue(){
-        //100 is maximum value
-        Category category = new Category("İletişim");
-        Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.addItem(iphoneXs,101);
-        Assert.assertEquals(0,shoppingCart.getCart().size());
-    }
+
     @Test
     public void addItem_minimumValue(){
         //1 is minimum value
@@ -44,7 +65,29 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscounts_typeAmount_success(){
+    public void addItem_maximumValue(){
+        //100 is maximum value
+        Category category = new Category("İletişim");
+        Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,101);
+        Assert.assertEquals(0,shoppingCart.getCart().size());
+    }
+    @Test
+    public void applyDiscount_parentCampaign_success(){
+        Category child = new Category("cep telefonu");
+        Category parent = new Category("İletişim");
+        parent.setChild(child);
+        Product iphoneXs = new Product("Iphone XS",child,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
+        Campaign campaign = new Campaign(parent,1000,new AmountCampaignCalculator(),1);
+        shoppingCart.applyDiscount(campaign);
+        Assert.assertEquals(0,Double.compare(shoppingCart.getTotalAmountAfterDiscounts(),8000));
+    }
+
+    @Test
+    public void applyDiscount_campaign_typeAmount_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -54,7 +97,7 @@ public class ShoppingCartTest {
         Assert.assertEquals(0,Double.compare(shoppingCart.getTotalAmountAfterDiscounts(),17500));
     }
     @Test
-    public void applyDiscounts_typeRate_success(){
+    public void applyDiscount_campaign_typeRate_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -65,7 +108,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyCoupon_typeAmount_success(){
+    public void applyDiscount_coupon_typeAmount_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -76,7 +119,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyCoupon_typeRate_success(){
+    public void applyDiscount_coupon_typeRate_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -87,7 +130,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyCoupon_typeAmount_notApplicable(){
+    public void applyDiscount_coupon_typeAmount_notApplicable(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,90,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -98,7 +141,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyCoupon_typeRate_notApplicable(){
+    public void applyDiscount_coupon_typeRate_notApplicable(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,90,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -109,7 +152,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_and_applyCoupon_success(){
+    public void applyDiscount_campaign_and_coupon_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,1200,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();

@@ -1,9 +1,17 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.cart;
 
+import com.firat.shoppingcart.Result;
+import com.firat.shoppingcart.discount.Discount;
+import com.firat.shoppingcart.discount.campaign.Campaign;
+import com.firat.shoppingcart.cost.CostCalculator;
+import com.firat.shoppingcart.cost.DeliveryCostCalculator;
+import com.firat.shoppingcart.discount.coupon.Coupon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
+import static com.firat.shoppingcart.cart.ShoppingCartConstants.FAIL_ADD_PRODUCT_NULL;
 
 public class ShoppingCart {
     private final Logger logger = LoggerFactory.getLogger(ShoppingCart.class);
@@ -21,10 +29,17 @@ public class ShoppingCart {
      * adds a new product into the shopping cart
      * @param product   quality of data
      * @param quantity  quantity of data
+     * @return operation result.
      */
-    public void addItem(Product product, int quantity){
-        Optional.ofNullable(product)
-                .ifPresent(currentProduct->currentProduct.add(this,quantity));
+    public Result addItem(Product product, int quantity){
+        return Optional.ofNullable(product)
+                .map(currentProduct->{
+                    Result productAdd = currentProduct.add(this, quantity);
+                    if (productAdd.getStatus() != 0){
+                        logger.error("Error: {}",productAdd.getMessage());
+                    }
+                    return productAdd;
+                }).orElse(new Result(FAIL_ADD_PRODUCT_NULL));
     }
 
     /**
@@ -38,7 +53,7 @@ public class ShoppingCart {
                     if (currentDiscount instanceof Coupon && getTotalPrice() > currentDiscount.getItemThreshold())
                         this.discounts.add(currentDiscount);
                     // campaings have item-based threshold
-                    else if (size() > currentDiscount.getItemThreshold())
+                    else if (size() >= currentDiscount.getItemThreshold())
                         this.discounts.add(currentDiscount);
                 });
     }
@@ -62,17 +77,29 @@ public class ShoppingCart {
      * @return calculates total price by each category added into the shopping cart
      */
     public Double findPriceByCategory(Category category){
-        return Optional.ofNullable(category.getTitle())
-                .map(title->{
-                    double price=0;
-                    List<ShoppingCartItem> shoppingCartItems = cart.get(title);
+        // parent category may have a discount.
+        // discount should be applied childrens under the parent campaign
+        List<String> childCategoryNames
+                = category.allChildren(new ArrayList<>(), category);
 
-                    for (int i = 0; i < shoppingCartItems.size(); i++) {
-                        if (shoppingCartItems.get(i)!=null)
-                            price += shoppingCartItems.get(i).getQuantity() * shoppingCartItems.get(i).getProduct().getPrice();
-                    }
-                    return price;
-                }).get();
+        return Optional.ofNullable(category.getTitle())
+                //first .map() method iterates on each child category to find price
+                .map(title-> childCategoryNames
+                        .stream()
+                        .map(childCategory-> {
+                            Optional<List<ShoppingCartItem>> shoppingCartItems = Optional.ofNullable(cart.get(title));
+                            //second .map() method iterates on the items on
+                            // specific category that available in the shopping cart
+                            return shoppingCartItems.map(item -> {
+                                double price = 0;
+                                for (ShoppingCartItem shoppingCartItem : item) {
+                                    if (shoppingCartItem != null)
+                                        price += shoppingCartItem.getQuantity() *
+                                                shoppingCartItem.getProduct().getPrice();
+                                }
+                                return price;
+                            }).orElse((double) 0);
+                        }).reduce((double)0,Double::sum)).get();
     }
 
     /**

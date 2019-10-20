@@ -1,4 +1,4 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.discount.campaign;
 
 /**
  * makes an amount based campaign calculation

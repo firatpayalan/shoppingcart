@@ -1,4 +1,4 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.cart;
 
 /**
  * an item that placed in the Shopping Cart

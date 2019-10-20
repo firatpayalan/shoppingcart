@@ -1,4 +1,6 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.cart;
+
+import com.firat.shoppingcart.Result;
 
 /**
  *
@@ -43,7 +45,7 @@ public class Product {
      * @param cart shopping cart
      * @param quantity amount of the product
      */
-    public void add(ShoppingCart cart,int quantity){
-        this.adder.add(this,quantity,cart);
+    public Result add(ShoppingCart cart, int quantity){
+        return this.adder.add(this,quantity,cart);
     }
 }

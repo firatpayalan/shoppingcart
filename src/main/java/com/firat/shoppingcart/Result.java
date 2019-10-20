@@ -15,6 +15,10 @@ public class Result {
         this.status = 0;
         this.message = "Success";
     }
+    public Result(String message){
+        this.status = 1;
+        this.message = message;
+    }
 
     public int getStatus() {
         return status;

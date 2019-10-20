@@ -1,4 +1,7 @@
-package com.firat.shoppingcart;
+package com.firat.shoppingcart.discount.campaign;
+
+import com.firat.shoppingcart.cart.Category;
+import com.firat.shoppingcart.discount.Discount;
 
 /**
  * Campaign is the special Discount class.
