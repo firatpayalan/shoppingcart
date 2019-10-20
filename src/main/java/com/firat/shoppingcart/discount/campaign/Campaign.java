@@ -3,6 +3,8 @@ package com.firat.shoppingcart.discount.campaign;
 import com.firat.shoppingcart.cart.Category;
 import com.firat.shoppingcart.discount.Discount;
 
+import java.util.Optional;
+
 /**
  * Campaign is the special Discount class.
  */
@@ -32,7 +34,9 @@ public class Campaign extends Discount {
      * @return calculated campaign amount
      */
     public double apply(double totalAmount){
-        return this.campaignCalculator.calculate(this,totalAmount);
+        return Optional.ofNullable(this.campaignCalculator)
+                .map(calculator-> calculator.calculate(this,totalAmount))
+                .orElse((double)0);
     }
 
 }

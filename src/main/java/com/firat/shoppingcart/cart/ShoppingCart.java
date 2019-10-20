@@ -138,7 +138,7 @@ public class ShoppingCart {
                                 .map(j->j.getQuantity()*j.getProduct().getPrice())
                                 .reduce((double)0,Double::sum))
                 .findFirst()
-                .get();
+                .orElse((double)0);
     }
 
     /**
@@ -169,15 +169,17 @@ public class ShoppingCart {
      */
     public void print(){
         this.cart.forEach((key, value) -> {
-            logger.info(">>Category Name: {}", key);
+            System.out.printf(">>Category Name: %s \n",key);
             value.forEach(shoppingCartItem -> {
-                logger.info("\t >>Product Name: {}", shoppingCartItem.getProduct().getTitle());
-                logger.info("\t >>Quantity: {}", shoppingCartItem.getQuantity());
-                logger.info("\t >>Unit Price: {}", shoppingCartItem.getProduct().getPrice());
+                System.out.printf("\t >>Product Name: %s \n",shoppingCartItem.getProduct().getTitle());
+                System.out.printf("\t >>Quantity: %s \n",shoppingCartItem.getQuantity());
+                System.out.printf("\t >>Unit Price: %s \n",shoppingCartItem.getProduct().getPrice());
             });
         });
-        logger.info(">>Total Price: {}",getTotalPrice());
-        logger.info(">>Total Discount: {}",(getCampaignDiscount()+getCouponDiscount()));
+        System.out.printf(">>Total Price: %s \n",getTotalPrice());
+        System.out.printf(">>Total Discount: %s \n",(getCampaignDiscount()+getCouponDiscount()));
+        System.out.printf(">>Total Amount: %s \n",getTotalAmountAfterDiscounts());
+        System.out.printf(">>Delivery Amount: %s \n",getDeliveryCost());
     }
     /**
      *

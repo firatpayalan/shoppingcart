@@ -9,5 +9,8 @@ public class ShoppingCartConstants {
     public static final String FAIL_ADD_CATEGORY_TITLE_NULL =   "Category name must be provided";
     public static final String FAIL_ADD_PRODUCT_NULL                =   "Product data could not be null";
     public static final String FAIL_ADD_PRODUCT_TITLE_NULL                =   "Product title could not be null";
+    public static final String FAIL_ADD_CATEGORY_TITLE_EMPTY =   "Category title could not be empty";
+    public static final String FAIL_ADD_PRODUCT_TITLE_EMPTY =   "Product title could not be empty";
     public static final String FAIL_ADD_CATEGORY_NULL               =   "Category data could not be null";
+    public static final String FAIL_ADD_STRATEGY_NULL      =   "Shopping Cart Adding module does not registered";
 }

@@ -36,6 +36,11 @@ public class Category {
         return child;
     }
 
+    /**
+     * @param childrens each member has been collected in this structure
+     * @param child next child
+     * @return all child elements of the category....feels like müge anlı
+     */
     public List<String> allChildren(List<String> childrens,Category child){
         if (child!=null){
             childrens.add(child.getTitle());

@@ -2,10 +2,14 @@ package com.firat.shoppingcart.cart;
 
 import com.firat.shoppingcart.Result;
 
+import java.util.Optional;
+
+import static com.firat.shoppingcart.cart.ShoppingCartConstants.FAIL_ADD_STRATEGY_NULL;
+
 /**
  *
  */
-public class Product {
+public class Product extends ParentProduct {
     private String title;
     private Category category;
     private Double price;
@@ -46,6 +50,8 @@ public class Product {
      * @param quantity amount of the product
      */
     public Result add(ShoppingCart cart, int quantity){
-        return this.adder.add(this,quantity,cart);
+        return Optional.ofNullable(this.adder)
+                .map(cartAdder -> cartAdder.add(this,quantity,cart))
+                .orElse(new Result(FAIL_ADD_STRATEGY_NULL));
     }
 }

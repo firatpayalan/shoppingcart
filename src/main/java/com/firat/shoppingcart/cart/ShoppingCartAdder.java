@@ -31,7 +31,9 @@ public class ShoppingCartAdder extends CartAdder<Product> {
         Optional<String> productTitle = Optional.ofNullable(product.get().getTitle());
         if (!productTitle.isPresent())
             return new Result(1,FAIL_ADD_PRODUCT_TITLE_NULL);
-
+        // product title wont be empty
+        if (productTitle.get().trim().isEmpty())
+            return new Result(1,FAIL_ADD_PRODUCT_TITLE_EMPTY);
         // category data in product object might be null
         Optional<Category> category = Optional.ofNullable(product.get().getCategory());
         if (!category.isPresent())
@@ -39,6 +41,10 @@ public class ShoppingCartAdder extends CartAdder<Product> {
 
         Optional<String> categoryTitle = Optional.ofNullable(category.get().getTitle());
         return categoryTitle.map(title->{
+            // category title could not be empty.
+            if (title.trim().isEmpty())
+                return new Result(FAIL_ADD_CATEGORY_TITLE_EMPTY);
+
             Optional<List<ShoppingCartItem>> itemsOfCategory = Optional.ofNullable(cart.getCart().get(title));
             if (!itemsOfCategory.isPresent()){
                 // new category
