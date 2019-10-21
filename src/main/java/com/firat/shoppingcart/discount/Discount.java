@@ -1,9 +1,11 @@
 package com.firat.shoppingcart.discount;
 
+import com.firat.shoppingcart.cart.ShoppingCart;
+
 /**
  * pure discount class
  */
-public class Discount {
+public class Discount implements DiscountApplicable{
     // the value either be applied into as amount or rate
     private double discountValue;
     // is the rule of applying discount into the shopping cart
@@ -28,5 +30,10 @@ public class Discount {
 
     public int getItemThreshold() {
         return itemThreshold;
+    }
+
+    @Override
+    public void apply(ShoppingCart cart) {
+
     }
 }

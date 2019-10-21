@@ -1,11 +1,17 @@
 package com.firat.shoppingcart.cart;
 
+import com.firat.shoppingcart.cart.exception.CategoryNullException;
+import com.firat.shoppingcart.cart.exception.ProductNullException;
+import com.firat.shoppingcart.cart.exception.QuantityInvalidException;
+import com.firat.shoppingcart.cart.exception.ShoppingCartLimitExceeded;
 import com.firat.shoppingcart.discount.campaign.AmountCampaignCalculator;
 import com.firat.shoppingcart.discount.campaign.Campaign;
 import com.firat.shoppingcart.discount.campaign.RateCampaignCalculator;
 import com.firat.shoppingcart.discount.coupon.AmountCouponCalculator;
 import com.firat.shoppingcart.discount.coupon.Coupon;
 import com.firat.shoppingcart.discount.coupon.RateCouponCalculator;
+import com.firat.shoppingcart.discount.exception.CalculatorNullException;
+import com.firat.shoppingcart.discount.exception.DiscountNullException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,11 +19,8 @@ import org.junit.Test;
  * naming convention is
  *
  * methodName_case_expectedUnitTestStatus
- * For example;
- * addItem_categoryIsNull_success
- * methodName: addItem
- * case: category object is null
- * expected unit test status: success
+ * or
+ * methodName_case_exception_expectedUnitTestStatus
  */
 public class ShoppingCartTest {
     @Test
@@ -28,27 +31,25 @@ public class ShoppingCartTest {
         shoppingCart.addItem(iphoneXs,1);
         Assert.assertEquals(1,shoppingCart.getCart().size());
     }
-    @Test
+    @Test(expected = CategoryNullException.class)
     public void addItem_categoryIsNull_success(){
         Product iphoneXs = new Product("Iphone XS",null,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(iphoneXs,1);
-        Assert.assertEquals(0,shoppingCart.getCart().size());
+        shoppingCart.getCart().size();
     }
-    @Test
+    @Test(expected = ProductNullException.class)
     public void addItem_productIsNull_success(){
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(null,1);
-        Assert.assertEquals(0,shoppingCart.getCart().size());
     }
 
-    @Test
+    @Test(expected = ProductNullException.class)
     public void addItem_productTitleIsNull_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product(null,category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(iphoneXs,1);
-        Assert.assertEquals(0,shoppingCart.getCart().size());
     }
 
     //has to be append
@@ -64,25 +65,24 @@ public class ShoppingCartTest {
     }
 
 
-    @Test
+    @Test(expected = QuantityInvalidException.class)
     public void addItem_minimumValue_success(){
         //1 is minimum value
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(iphoneXs,0);
-        Assert.assertEquals(0,shoppingCart.size());
     }
 
-    @Test
+    @Test(expected = ShoppingCartLimitExceeded.class)
     public void addItem_maximumValue_success(){
         //100 is maximum value
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(iphoneXs,101);
-        Assert.assertEquals(0,shoppingCart.getCart().size());
     }
+
     @Test
     public void applyDiscount_parentCampaign_success(){
         Category child = new Category("cep telefonu");
@@ -96,17 +96,16 @@ public class ShoppingCartTest {
         Assert.assertEquals(0,Double.compare(shoppingCart.getTotalAmountAfterDiscounts(),8000));
     }
 
-    @Test
+    @Test(expected = CategoryNullException.class)
     public void applyDiscount_nullCategory_success(){
         Product iphoneXs = new Product("Iphone XS",null,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(iphoneXs,1);
         Campaign campaign = new Campaign(null,500,new AmountCampaignCalculator(),1);
         shoppingCart.applyDiscount(campaign);
-        Assert.assertEquals(0,Double.compare(shoppingCart.getCampaignDiscount(),0));
     }
 
-    @Test
+    @Test(expected = CalculatorNullException.class)
     public void applyDiscount_campaignNullStrategy_success(){
         Category parent = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",parent,9000,new ShoppingCartAdder());
@@ -114,9 +113,9 @@ public class ShoppingCartTest {
         shoppingCart.addItem(iphoneXs,1);
         Campaign campaign = new Campaign(parent,500,null,1);
         shoppingCart.applyDiscount(campaign);
-        Assert.assertEquals(0,Double.compare(shoppingCart.getCampaignDiscount(),0));
+        shoppingCart.getCampaignDiscount();
     }
-    @Test
+    @Test(expected = CalculatorNullException.class)
     public void applyDiscount_couponNullStrategy_success(){
         Category parent = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",parent,9000,new ShoppingCartAdder());
@@ -124,17 +123,12 @@ public class ShoppingCartTest {
         shoppingCart.addItem(iphoneXs,1);
         Coupon coupon = new Coupon(100,500,null);
         shoppingCart.applyDiscount(coupon);
-        Assert.assertEquals(0,Double.compare(shoppingCart.getCouponDiscount(),0));
+        shoppingCart.getCouponDiscount();
     }
-    @Test
+    @Test(expected = DiscountNullException.class)
     public void applyDiscount_nullDiscount_success(){
-        Category parent = new Category("İletişim");
-        Product iphoneXs = new Product("Iphone XS",parent,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.addItem(iphoneXs,1);
-        Campaign campaign = new Campaign(parent,500,null,1);
         shoppingCart.applyDiscount(null);
-        Assert.assertEquals(0,Double.compare(shoppingCart.getCampaignDiscount(),0));
     }
 
     @Test

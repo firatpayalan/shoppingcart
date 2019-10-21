@@ -1,10 +1,10 @@
 package com.firat.shoppingcart.cart;
 
 import com.firat.shoppingcart.Result;
+import com.firat.shoppingcart.cart.exception.StrategyAdderNotFoundException;
 
 import java.util.Optional;
 
-import static com.firat.shoppingcart.cart.ShoppingCartConstants.FAIL_ADD_STRATEGY_NULL;
 public class Product extends ParentProduct {
     private String title;
     private Category category;
@@ -45,9 +45,9 @@ public class Product extends ParentProduct {
      * @param cart shopping cart
      * @param quantity amount of the product
      */
-    public Result add(ShoppingCart cart, int quantity){
-        return Optional.ofNullable(this.adder)
-                .map(cartAdder -> cartAdder.add(this,quantity,cart))
-                .orElse(new Result(FAIL_ADD_STRATEGY_NULL));
+    public void add(ShoppingCart cart, int quantity){
+        Optional.ofNullable(this.adder)
+                .orElseThrow(StrategyAdderNotFoundException::new)
+                .add(this,quantity,cart);
     }
 }

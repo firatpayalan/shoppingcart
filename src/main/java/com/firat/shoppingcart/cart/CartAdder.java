@@ -8,5 +8,5 @@ import com.firat.shoppingcart.cart.ShoppingCart;
  * @param <T>
  */
 public abstract class CartAdder<T extends ParentProduct> {
-    public Result add(T p, int quantity, ShoppingCart cart){return null;}
+    public void add(T p, int quantity, ShoppingCart cart){}
 }
