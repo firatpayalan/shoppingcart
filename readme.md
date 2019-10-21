@@ -1,4 +1,6 @@
 # Shopping Cart Application
+[![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/firatpayalan/shoppingcart/master/LICENCE)
+
 A simple application for demonstrating shopping cart flow within a commercial portal.
 
 ## Installation
