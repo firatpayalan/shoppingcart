@@ -9,6 +9,16 @@ import com.firat.shoppingcart.discount.coupon.RateCouponCalculator;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * naming convention is
+ *
+ * methodName_case_expectedUnitTestStatus
+ * For example;
+ * addItem_categoryIsNull_success
+ * methodName: addItem
+ * case: category object is null
+ * expected unit test status: success
+ */
 public class ShoppingCartTest {
     @Test
     public void addItem_success(){
@@ -19,21 +29,21 @@ public class ShoppingCartTest {
         Assert.assertEquals(1,shoppingCart.getCart().size());
     }
     @Test
-    public void addItem_null_category_failed(){
+    public void addItem_categoryIsNull_success(){
         Product iphoneXs = new Product("Iphone XS",null,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(iphoneXs,1);
         Assert.assertEquals(0,shoppingCart.getCart().size());
     }
     @Test
-    public void addItem_null_product(){
+    public void addItem_productIsNull_success(){
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(null,1);
         Assert.assertEquals(0,shoppingCart.getCart().size());
     }
 
     @Test
-    public void addItem_null_productTitle_failed(){
+    public void addItem_productTitleIsNull_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product(null,category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -43,7 +53,7 @@ public class ShoppingCartTest {
 
     //has to be append
     @Test
-    public void  addItem_duplicate(){
+    public void  addItem_duplicate_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         Product iphoneXsDuplicate = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
@@ -55,7 +65,7 @@ public class ShoppingCartTest {
 
 
     @Test
-    public void addItem_minimumValue(){
+    public void addItem_minimumValue_success(){
         //1 is minimum value
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
@@ -65,7 +75,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void addItem_maximumValue(){
+    public void addItem_maximumValue_success(){
         //100 is maximum value
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
@@ -171,7 +181,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_couponTypeAmount_notApplicable(){
+    public void applyDiscount_couponTypeAmountNotApplicable_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,90,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -182,7 +192,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_couponTypeRate_notApplicable(){
+    public void applyDiscount_couponTypeRateNotApplicable_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,90,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
