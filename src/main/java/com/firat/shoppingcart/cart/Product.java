@@ -5,10 +5,6 @@ import com.firat.shoppingcart.Result;
 import java.util.Optional;
 
 import static com.firat.shoppingcart.cart.ShoppingCartConstants.FAIL_ADD_STRATEGY_NULL;
-
-/**
- *
- */
 public class Product extends ParentProduct {
     private String title;
     private Category category;

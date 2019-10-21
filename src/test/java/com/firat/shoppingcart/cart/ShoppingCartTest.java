@@ -87,7 +87,48 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_campaign_typeAmount_success(){
+    public void applyDiscount_nullCategory_success(){
+        Product iphoneXs = new Product("Iphone XS",null,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
+        Campaign campaign = new Campaign(null,500,new AmountCampaignCalculator(),1);
+        shoppingCart.applyDiscount(campaign);
+        Assert.assertEquals(0,Double.compare(shoppingCart.getCampaignDiscount(),0));
+    }
+
+    @Test
+    public void applyDiscount_campaignNullStrategy_success(){
+        Category parent = new Category("İletişim");
+        Product iphoneXs = new Product("Iphone XS",parent,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
+        Campaign campaign = new Campaign(parent,500,null,1);
+        shoppingCart.applyDiscount(campaign);
+        Assert.assertEquals(0,Double.compare(shoppingCart.getCampaignDiscount(),0));
+    }
+    @Test
+    public void applyDiscount_couponNullStrategy_success(){
+        Category parent = new Category("İletişim");
+        Product iphoneXs = new Product("Iphone XS",parent,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
+        Coupon coupon = new Coupon(100,500,null);
+        shoppingCart.applyDiscount(coupon);
+        Assert.assertEquals(0,Double.compare(shoppingCart.getCouponDiscount(),0));
+    }
+    @Test
+    public void applyDiscount_nullDiscount_success(){
+        Category parent = new Category("İletişim");
+        Product iphoneXs = new Product("Iphone XS",parent,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
+        Campaign campaign = new Campaign(parent,500,null,1);
+        shoppingCart.applyDiscount(null);
+        Assert.assertEquals(0,Double.compare(shoppingCart.getCampaignDiscount(),0));
+    }
+
+    @Test
+    public void applyDiscount_campaignTypeAmount_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -97,7 +138,7 @@ public class ShoppingCartTest {
         Assert.assertEquals(0,Double.compare(shoppingCart.getTotalAmountAfterDiscounts(),17500));
     }
     @Test
-    public void applyDiscount_campaign_typeRate_success(){
+    public void applyDiscount_campaignTypeRate_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -108,7 +149,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_coupon_typeAmount_success(){
+    public void applyDiscount_couponTypeAmount_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -119,7 +160,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_coupon_typeRate_success(){
+    public void applyDiscount_couponTypeRate_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -130,7 +171,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_coupon_typeAmount_notApplicable(){
+    public void applyDiscount_couponTypeAmount_notApplicable(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,90,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -141,7 +182,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_coupon_typeRate_notApplicable(){
+    public void applyDiscount_couponTypeRate_notApplicable(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,90,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -152,7 +193,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_campaign_and_coupon_success(){
+    public void applyDiscount_campaignAndcoupon_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,1200,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
