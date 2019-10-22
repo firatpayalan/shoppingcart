@@ -9,6 +9,7 @@ import com.firat.shoppingcart.discount.coupon.Coupon;
 import com.firat.shoppingcart.discount.coupon.RateCouponCalculator;
 import com.firat.shoppingcart.discount.exception.CalculatorNullException;
 import com.firat.shoppingcart.discount.exception.DiscountNullException;
+import com.firat.shoppingcart.discount.exception.InvalidDiscountValueException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,6 +50,13 @@ public class ShoppingCartTest {
         shoppingCart.addItem(iphoneXs,1);
     }
 
+    @Test(expected = PriceInvalidException.class)
+    public void addItem_productPriceIsMinus_expected_priceInvalidException(){
+        Category category = new Category("gemili");
+        Product iphoneXs = new Product("taytanik",category,-9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
+    }
     //has to be append
     @Test
     public void  addItem_duplicate_success(){
@@ -149,6 +157,18 @@ public class ShoppingCartTest {
         Assert.assertEquals(0,Double.compare(shoppingCart.getTotalAmountAfterDiscounts(),9000));
     }
 
+    @Test(expected = InvalidDiscountValueException.class)
+    public void applyDiscount_campaignTypeRateButMinusDiscountValue_success(){
+        Category category = new Category("İletişim");
+        Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,2);
+        Campaign campaign = new Campaign(category,-50,new RateCampaignCalculator(),1);
+        shoppingCart.applyDiscount(campaign);
+        Assert.assertEquals(0,Double.compare(shoppingCart.getTotalAmountAfterDiscounts(),9000));
+    }
+
+
     @Test
     public void applyDiscount_couponTypeAmount_success(){
         Category category = new Category("İletişim");
@@ -160,6 +180,16 @@ public class ShoppingCartTest {
         Assert.assertEquals(0,Double.compare(shoppingCart.getTotalAmountAfterDiscounts(),8000));
     }
 
+    @Test(expected = InvalidDiscountValueException.class)
+    public void applyDiscount_couponTypeRateButMinusDiscountValue_success(){
+        Category category = new Category("İletişim");
+        Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
+        Coupon coupon = new Coupon(100,-50,new RateCouponCalculator());
+        shoppingCart.applyDiscount(coupon);
+        Assert.assertEquals(0,Double.compare(shoppingCart.getTotalAmountAfterDiscounts(),4500));
+    }
     @Test
     public void applyDiscount_couponTypeRate_success(){
         Category category = new Category("İletişim");

@@ -1,10 +1,7 @@
 package com.firat.shoppingcart.cart;
 
 import com.firat.shoppingcart.Result;
-import com.firat.shoppingcart.cart.exception.CategoryNullException;
-import com.firat.shoppingcart.cart.exception.ProductNullException;
-import com.firat.shoppingcart.cart.exception.QuantityInvalidException;
-import com.firat.shoppingcart.cart.exception.ShoppingCartLimitExceeded;
+import com.firat.shoppingcart.cart.exception.*;
 
 import javax.swing.text.html.Option;
 import java.util.ArrayList;
@@ -31,6 +28,9 @@ public class ShoppingCartAdder extends CartAdder<Product> {
 
         Optional.ofNullable(p)
                 .orElseThrow(ProductNullException::new);
+
+        if (p.getPrice() < 0)
+            throw new PriceInvalidException();
 
         Optional.ofNullable(p.getTitle())
                 .map(String::trim)
@@ -62,9 +62,11 @@ public class ShoppingCartAdder extends CartAdder<Product> {
                                     }
                                 });
                     }
+
                     itemsOfCategoryOpt.ifPresent(itemsOfCategory->{
                         // category may already existed in the cart
                         if (itemsOfCategory.contains(toBeAddedCartItem)){
+                            //product may already existed in that category, we just only increment.
                             for (ShoppingCartItem item:cart.getCart().get(title)) {
                                 if (item.equals(toBeAddedCartItem)){
                                     item.setQuantity(item.getQuantity()+toBeAddedCartItem.getQuantity());

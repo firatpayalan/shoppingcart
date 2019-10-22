@@ -1,6 +1,7 @@
 package com.firat.shoppingcart.discount;
 
 import com.firat.shoppingcart.cart.ShoppingCart;
+import com.firat.shoppingcart.discount.exception.InvalidDiscountValueException;
 
 /**
  * pure discount class
@@ -34,6 +35,7 @@ public class Discount implements DiscountApplicable{
 
     @Override
     public void apply(ShoppingCart cart) {
-
+        if (discountValue < 0)
+            throw new InvalidDiscountValueException();
     }
 }

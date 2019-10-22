@@ -26,6 +26,7 @@ public class Coupon extends Discount implements DiscountApplicable {
 
     @Override
     public void apply(ShoppingCart cart) {
+        super.apply(cart);
         if (cart.getTotalPrice() > this.getItemThreshold())
             cart.getDiscounts().add(this);
     }

@@ -5,6 +5,7 @@ import com.firat.shoppingcart.cart.ShoppingCart;
 import com.firat.shoppingcart.discount.Discount;
 import com.firat.shoppingcart.discount.DiscountApplicable;
 import com.firat.shoppingcart.discount.exception.CalculatorNullException;
+import com.firat.shoppingcart.discount.exception.InvalidDiscountValueException;
 
 import java.util.Optional;
 
@@ -44,7 +45,7 @@ public class Campaign extends Discount implements DiscountApplicable{
 
     @Override
     public void apply(ShoppingCart cart) {
-
+        super.apply(cart);
         if (cart.size() >= this.getItemThreshold())
             cart.getDiscounts().add(this);
     }
