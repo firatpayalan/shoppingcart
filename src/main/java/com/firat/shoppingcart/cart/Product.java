@@ -3,6 +3,7 @@ package com.firat.shoppingcart.cart;
 import com.firat.shoppingcart.Result;
 import com.firat.shoppingcart.cart.exception.StrategyAdderNotFoundException;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Product extends ParentProduct {
@@ -31,14 +32,6 @@ public class Product extends ParentProduct {
         return price;
     }
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "title='" + title + '\'' +
-                ", category=" + category +
-                ", price=" + price +
-                '}';
-    }
 
     /**
      * executes the addition strategy
@@ -49,5 +42,19 @@ public class Product extends ParentProduct {
         Optional.ofNullable(this.adder)
                 .orElseThrow(StrategyAdderNotFoundException::new)
                 .add(this,quantity,cart);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(title, product.title) &&
+                Objects.equals(category, product.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, category);
     }
 }

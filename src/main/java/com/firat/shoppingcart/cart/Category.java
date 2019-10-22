@@ -2,26 +2,14 @@ package com.firat.shoppingcart.cart;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Category {
     private String title;
     private Category child;
 
-    public Category(String title, Category child) {
-        this.title = title;
-        this.child = child;
-    }
-
     public Category(String title) {
         this.title = title;
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-                "title='" + title + '\'' +
-                ", parent=" + child +
-                '}';
     }
 
     public String getTitle() {
@@ -47,5 +35,18 @@ public class Category {
             return allChildren(childrens,child.getChild());
         }
         return childrens;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return Objects.equals(title, category.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title);
     }
 }

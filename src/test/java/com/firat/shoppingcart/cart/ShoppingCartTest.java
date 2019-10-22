@@ -1,9 +1,6 @@
 package com.firat.shoppingcart.cart;
 
-import com.firat.shoppingcart.cart.exception.CategoryNullException;
-import com.firat.shoppingcart.cart.exception.ProductNullException;
-import com.firat.shoppingcart.cart.exception.QuantityInvalidException;
-import com.firat.shoppingcart.cart.exception.ShoppingCartLimitExceeded;
+import com.firat.shoppingcart.cart.exception.*;
 import com.firat.shoppingcart.discount.campaign.AmountCampaignCalculator;
 import com.firat.shoppingcart.discount.campaign.Campaign;
 import com.firat.shoppingcart.discount.campaign.RateCampaignCalculator;
@@ -32,20 +29,20 @@ public class ShoppingCartTest {
         Assert.assertEquals(1,shoppingCart.getCart().size());
     }
     @Test(expected = CategoryNullException.class)
-    public void addItem_categoryIsNull_success(){
+    public void addItem_categoryIsNull_expected_categoryNullException(){
         Product iphoneXs = new Product("Iphone XS",null,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(iphoneXs,1);
         shoppingCart.getCart().size();
     }
     @Test(expected = ProductNullException.class)
-    public void addItem_productIsNull_success(){
+    public void addItem_productIsNull_expected_productNullException(){
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(null,1);
     }
 
     @Test(expected = ProductNullException.class)
-    public void addItem_productTitleIsNull_success(){
+    public void addItem_productTitleIsNull_expected_productNullException(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product(null,category,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -61,12 +58,12 @@ public class ShoppingCartTest {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(iphoneXs,1);
         shoppingCart.addItem(iphoneXsDuplicate,1);
-        Assert.assertEquals(2,shoppingCart.getCart().get(category.getTitle()).size());
+        Assert.assertEquals(2,shoppingCart.getCart().get(category.getTitle()).get(0).getQuantity());
     }
 
 
     @Test(expected = QuantityInvalidException.class)
-    public void addItem_minimumValue_success(){
+    public void addItem_minimumValue_expected_quantityInvalidException(){
         //1 is minimum value
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
@@ -75,7 +72,7 @@ public class ShoppingCartTest {
     }
 
     @Test(expected = ShoppingCartLimitExceeded.class)
-    public void addItem_maximumValue_success(){
+    public void addItem_maximumValue_expected_shoppingCartLimitExceeded(){
         //100 is maximum value
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,9000,new ShoppingCartAdder());
@@ -97,7 +94,7 @@ public class ShoppingCartTest {
     }
 
     @Test(expected = CategoryNullException.class)
-    public void applyDiscount_nullCategory_success(){
+    public void applyDiscount_nullCategory_expected_categoryNullException(){
         Product iphoneXs = new Product("Iphone XS",null,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addItem(iphoneXs,1);
@@ -106,7 +103,7 @@ public class ShoppingCartTest {
     }
 
     @Test(expected = CalculatorNullException.class)
-    public void applyDiscount_campaignNullStrategy_success(){
+    public void applyDiscount_campaignNullStrategy_expected_calculatorNullException(){
         Category parent = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",parent,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -116,7 +113,7 @@ public class ShoppingCartTest {
         shoppingCart.getCampaignDiscount();
     }
     @Test(expected = CalculatorNullException.class)
-    public void applyDiscount_couponNullStrategy_success(){
+    public void applyDiscount_couponNullStrategy_expected_calculatorNullException(){
         Category parent = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",parent,9000,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -126,7 +123,7 @@ public class ShoppingCartTest {
         shoppingCart.getCouponDiscount();
     }
     @Test(expected = DiscountNullException.class)
-    public void applyDiscount_nullDiscount_success(){
+    public void applyDiscount_nullDiscount_expected_discountNullException(){
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.applyDiscount(null);
     }
@@ -197,7 +194,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void applyDiscount_campaignAndcoupon_success(){
+    public void applyDiscount_campaignAndCoupon_success(){
         Category category = new Category("İletişim");
         Product iphoneXs = new Product("Iphone XS",category,1200,new ShoppingCartAdder());
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -207,5 +204,12 @@ public class ShoppingCartTest {
         Coupon coupon = new Coupon(2000,500,new AmountCouponCalculator());
         shoppingCart.applyDiscount(coupon);
         Assert.assertEquals(0,Double.compare(shoppingCart.getTotalAmountAfterDiscounts(),2500));
+    }
+
+    @Test(expected = StrategyAdderNotFoundException.class)
+    public void addItem_adderStrategyIsNull_expected_strategyAdderNotFoundException(){
+        Product iphoneXs = new Product("Iphone XS",new Category("Katakulli"),1200,null);
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.addItem(iphoneXs,1);
     }
 }

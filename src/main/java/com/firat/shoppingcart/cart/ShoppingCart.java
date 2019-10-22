@@ -24,7 +24,7 @@ public class ShoppingCart {
         this.discounts = new ArrayList<>();
     }
 
-    private static Double calculateAmountOfCategory(List<ShoppingCartItem> item) {
+    private static Double calculatePriceOfCategory(List<ShoppingCartItem> item) {
         double price = 0;
         for (ShoppingCartItem shoppingCartItem : item) {
             if (shoppingCartItem != null) {
@@ -35,7 +35,7 @@ public class ShoppingCart {
         return price;
     }
 
-    private static Integer collectAllProducts(Map.Entry<String, List<ShoppingCartItem>> shoppingCartMap) {
+    private static Integer countAllProducts(Map.Entry<String, List<ShoppingCartItem>> shoppingCartMap) {
         return shoppingCartMap.getValue()
                 .stream()
                 .map(ShoppingCartItem::getQuantity)
@@ -70,7 +70,7 @@ public class ShoppingCart {
         return cart
                 .entrySet()
                 .stream()
-                .map(ShoppingCart::collectAllProducts)
+                .map(ShoppingCart::countAllProducts)
                 .reduce(0,Integer::sum);
     }
 
@@ -126,7 +126,7 @@ public class ShoppingCart {
         return cart
                 .entrySet()
                 .stream()
-                .map(i->ShoppingCart.calculateAmountOfCategory(i.getValue()))
+                .map(i->ShoppingCart.calculatePriceOfCategory(i.getValue()))
                 .findFirst()
                 .orElse((double)0);
     }
@@ -179,7 +179,7 @@ public class ShoppingCart {
     private Double getPriceOfCategory(String categoryName) {
         Optional<List<ShoppingCartItem>> shoppingCartItems = Optional.ofNullable(cart.get(categoryName));
         return shoppingCartItems
-                .map(ShoppingCart::calculateAmountOfCategory)
+                .map(ShoppingCart::calculatePriceOfCategory)
                 .orElse((double) 0);
     }
     /**

@@ -2,6 +2,7 @@ package com.firat.shoppingcart.cost;
 
 import com.firat.shoppingcart.cart.ShoppingCart;
 import com.firat.shoppingcart.cart.ShoppingCartItem;
+import com.firat.shoppingcart.cost.exception.ShoppingCartNullException;
 
 import java.util.Map;
 import java.util.Optional;
@@ -33,16 +34,14 @@ public class DeliveryCostCalculator extends CostCalculator{
                             .collect(Collectors.toList())
                             .size();
 
-                    //numberOfProducts is the total products in the cart.
-                    int numberOfProducts = shoppingCart.getCart()
+                    //numberOfProducts is the total different products in the cart.
+                    long numberOfProducts = shoppingCart.getCart()
                             .entrySet()
                             .stream()
-                            .map(mapShoppingCart->mapShoppingCart.getValue()
-                                    .stream()
-                                    .map(ShoppingCartItem::getQuantity)
-                                    .reduce(0,Integer::sum))
-                            .reduce(0,Integer::sum);
+                            .map(mapShoppingCart -> (long) mapShoppingCart.getValue().size())
+                            .reduce((long)0,Long::sum);
+
                     return (costPerDelivery*numberOfDeliveries) + (costPerProduct*numberOfProducts) + fixedCost;
-                }).orElseThrow(NullPointerException::new);
+                }).orElseThrow(ShoppingCartNullException::new);
     }
 }

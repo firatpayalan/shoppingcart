@@ -50,22 +50,32 @@ public class ShoppingCartAdder extends CartAdder<Product> {
 
         trimmedCategoryTitle
                 .ifPresent(title -> {
-
-                    Optional<List<ShoppingCartItem>> itemsOfCategory = Optional.ofNullable(cart.getCart().get(title));
-                    if (!itemsOfCategory.isPresent()){
+                    ShoppingCartItem toBeAddedCartItem = new ShoppingCartItem(p,quantity);
+                    Optional<List<ShoppingCartItem>> itemsOfCategoryOpt = Optional.ofNullable(cart.getCart().get(title));
+                    if (!itemsOfCategoryOpt.isPresent()){
                         // new category
                         cart.getCart()
                                 .put(p.getCategory().getTitle().trim(),new ArrayList<ShoppingCartItem>()
                                 {
                                     {
-                                        add(new ShoppingCartItem(p,quantity));
+                                        add(toBeAddedCartItem);
                                     }
                                 });
                     }
-                    // category may already existed in the cart
-                    itemsOfCategory.ifPresent(i->
-                            i.add(new ShoppingCartItem(p,quantity))
-                    );
+                    itemsOfCategoryOpt.ifPresent(itemsOfCategory->{
+                        // category may already existed in the cart
+                        if (itemsOfCategory.contains(toBeAddedCartItem)){
+                            for (ShoppingCartItem item:cart.getCart().get(title)) {
+                                if (item.equals(toBeAddedCartItem)){
+                                    item.setQuantity(item.getQuantity()+toBeAddedCartItem.getQuantity());
+                                    return;
+                                }
+                            }
+                        } else {
+                            itemsOfCategory.add(new ShoppingCartItem(p,quantity));
+                        }
+                    });
+
                 });
     }
 }
